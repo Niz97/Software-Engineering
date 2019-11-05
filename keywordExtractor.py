@@ -1,12 +1,13 @@
 '''
 @Description: function that extracts keywords from top headlines in the specified country
-@Version: 2.0.1.20191105
+@Version: 2.1.0.20191105
 @Author: Jichen Zhao
 @Date: 2019-10-29 14:22:59
 @Last Editors: Jichen
-@LastEditTime: 2019-11-05 15:55:26
+@LastEditTime: 2019-11-05 21:30:25
 '''
-from newspaper import Article
+
+from newspaper import Config, Article
 
 
 def ExtractKeywords(newsApi, mlApi, countryCode):
@@ -28,6 +29,9 @@ def ExtractKeywords(newsApi, mlApi, countryCode):
             newsList = topH['articles'] # the value paired with the key "articles" is a list of top headlines got from News API
             contentList = []
 
+            articleConfig = Config()
+            articleConfig.browser_user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36' # avoid Newspaper3k 403 Client Error for some URLs
+
             '''
             loop to get a list of all top headline content;
             generally, the value paired with the key "totalResults" is NOT equivalent to the length of the list of top headlines got from News API because not all available top headlines are returned from the server
@@ -35,7 +39,7 @@ def ExtractKeywords(newsApi, mlApi, countryCode):
             for count in range(len(newsList) - 1):
                 news = newsList[count] # each entry of the list is a dictionary of the info of 1 top headline
 
-                content = Article(news['url'], language = 'en')
+                content = Article(news['url'], language = 'en', config = articleConfig)
                 content.download()
                 content.parse()
                 contentList.append(content.text)
