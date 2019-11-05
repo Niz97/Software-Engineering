@@ -1,2 +1,3 @@
 newsapi-python==0.2.5
 newspaper3k==0.2.8
+monkeylearn==3.5.1
