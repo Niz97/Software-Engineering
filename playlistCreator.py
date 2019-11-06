@@ -27,4 +27,18 @@ else:
     print("Can't get token for", username)
 
 
+playlist_name = date+"-"+str(unqiueID)
+
+#playlists = sp.user_playlist_create(username, playlist_name)
+result = sp.search("track:brexit", type="track")
+item = result['tracks']['items']
+track = item[0]['artists']
+trackID = track[0]['id']
+
+print(trackID)
+"""for item in result['tracks']['items']:
+    track = item['artists']
+    trackIDs = track[0]['id']"""
+
+
 os.system("pause")
