@@ -9,6 +9,7 @@ import spotipy.util as util
 unqiueID = uuid.uuid4()
 today = date.today()
 date = today.strftime("%d/%m/%Y")
+trackIDs = []
 
 cid ="1d2c347f4e3d4b1e916066709832a6fa" 
 secret = "c8a5fa505def47f984bf78021d91b5f5"
@@ -28,17 +29,17 @@ else:
 
 
 playlist_name = date+"-"+str(unqiueID)
+playlists = sp.user_playlist_create(username, playlist_name)
 
-#playlists = sp.user_playlist_create(username, playlist_name)
 result = sp.search("track:brexit", type="track")
 item = result['tracks']['items']
-track = item[0]['artists']
-trackID = track[0]['id']
+trackIDs.append(item[0]['uri'])
 
-print(trackID)
-"""for item in result['tracks']['items']:
-    track = item['artists']
-    trackIDs = track[0]['id']"""
-
+playlists = sp.user_playlists(username)
+for playlist in playlists['items']:
+    if playlist['owner']['id'] == username:
+        if playlist['name'] == playlist_name:
+            for i in range(len(trackIDs)):
+                sp.user_playlist_add_tracks(username, playlist['id'], trackIDs)
 
 os.system("pause")
