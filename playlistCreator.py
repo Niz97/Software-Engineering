@@ -31,9 +31,15 @@ else:
 playlist_name = date+"-"+str(unqiueID)
 playlists = sp.user_playlist_create(username, playlist_name)
 
-result = sp.search("track:brexit", type="track")
-item = result['tracks']['items']
-trackIDs.append(item[0]['uri'])
+searchArray = ['mi cc9 pro', 'xiaomi mi cc9', 'isocell bright hmx', 'camera technology', 'camera algorithm', 'handset', 'consumer tech giant', 'community of engineer', 'bright gw1 sensor', 'chinese regulatory agency']
+
+for term in searchArray:
+	try:
+		result = sp.search("track:"+term, type="track")
+		item = result['tracks']['items']
+		trackIDs.append(item[0]['uri'])
+	except:
+		print("no track found")
 
 playlists = sp.user_playlists(username)
 for playlist in playlists['items']:
