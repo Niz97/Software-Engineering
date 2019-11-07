@@ -33,13 +33,14 @@ def createPlaylist(keywords):
 	playlist_name = newsDate+"-"+str(unqiueID)
 	playlists = sp.user_playlist_create(username, playlist_name)
 
-	for term in keywords:
-		try:
-			result = sp.search("track:"+term, type="track")
-			item = result['tracks']['items']
-			trackIDs.append(item[0]['uri'])
-		except:
-			print("no track found")
+	for termArray in keywords:
+		for term in termArray:
+			try:
+				result = sp.search("track:"+term, type="track")
+				item = result['tracks']['items']
+				trackIDs.append(item[0]['uri'])
+			except:
+				print("no track found")
 
 	playlists = sp.user_playlists(username)
 	for playlist in playlists['items']:
