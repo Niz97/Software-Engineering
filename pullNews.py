@@ -7,14 +7,16 @@
 # Driver: Niran Prajapati
 # Observer: Alexandra Garton
 
+from newsapi import NewsApiClient
 
-def get_headlines(countryCode, lang):
 
-  l = lang
+def get_headlines(countryCode):
+
+  newsApi = NewsApiClient(api_key = '3bd762aea6134796b564d8e18df60cf8') # handle authentication with a News API key (registered using zjcarvin@outlook.com)
 
   try:
   	# get top headlines from "source"
-  	top_headlines = newsapi.get_top_headlines(country = countryCode, language = l)
+  	top_headlines = newsApi.get_top_headlines(country = countryCode, language = 'en')
   except Exception as e:
   	return []
   else:
@@ -32,4 +34,6 @@ def get_headlines(countryCode, lang):
 
 ############ END OF FEATURE ############ 
 
-# print(get_headlines('gb', 'en'))
+# test purposes only
+if __name__ == '__main__':
+	print(get_headlines('gb'))
