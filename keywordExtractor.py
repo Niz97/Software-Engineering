@@ -40,8 +40,11 @@ def ExtractKeywords(newsApi, mlApi, countryCode):
                 news = newsList[count] # each entry of the list is a dictionary of the info of 1 top headline
 
                 content = Article(news['url'], language = 'en', config = articleConfig)
-                content.download()
-                content.parse()
+                try:
+                    content.download()
+                    content.parse()
+                except:
+                    print("cant download")
                 contentList.append(content.text)
 
             try:

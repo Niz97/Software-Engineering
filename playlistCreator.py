@@ -48,5 +48,3 @@ def createPlaylist(keywords):
 	        if playlist['name'] == playlist_name:
 	            for i in range(len(trackIDs)):
 	                sp.user_playlist_add_tracks(username, playlist['id'], trackIDs)
-
-	os.system("pause")
