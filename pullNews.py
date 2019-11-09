@@ -9,6 +9,8 @@
 
 from newsapi import NewsApiClient
 
+from logTool import Log
+
 
 def get_headlines(countryCode):
 
@@ -18,6 +20,7 @@ def get_headlines(countryCode):
   	# get top headlines from "source"
   	top_headlines = newsApi.get_top_headlines(country = countryCode, language = 'en')
   except Exception as e:
+  	Log('error', repr(e))
   	return []
   else:
   	num_articles = len(top_headlines['articles'])
@@ -30,6 +33,7 @@ def get_headlines(countryCode):
 
   		return headlines
   	else:
+		Log('warning', 'The top headline list is empty.')
   		return []
 
 ############ END OF FEATURE ############ 
