@@ -33,7 +33,7 @@ def get_headlines(countryCode):
 
   		return headlines
   	else:
-		Log('warning', 'The top headline list is empty.')
+  		Log('warning', 'The top headline list is empty.')
   		return []
 
 ############ END OF FEATURE ############ 
