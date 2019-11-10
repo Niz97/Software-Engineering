@@ -5,6 +5,7 @@ from datetime import date
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
+from logTool import Log
 
 def createPlaylist(keywords):
 
@@ -27,7 +28,7 @@ def createPlaylist(keywords):
 	if token:
 	    sp = spotipy.Spotify(auth=token)
 	else:
-	    print("Can't get token for", username)
+	    Log('warning', "Can't get token for" + username)
 
 
 	playlist_name = newsDate+"-"+str(unqiueID)
@@ -39,8 +40,8 @@ def createPlaylist(keywords):
 				result = sp.search("track:"+term, type="track")
 				item = result['tracks']['items']
 				trackIDs.append(item[0]['uri'])
-			except:
-				print("no track found")
+			except Exception as e:
+				Log('error', repr(e))
 
 	playlists = sp.user_playlists(username)
 	for playlist in playlists['items']:
@@ -48,3 +49,13 @@ def createPlaylist(keywords):
 	        if playlist['name'] == playlist_name:
 	            for i in range(len(trackIDs)):
 	                sp.user_playlist_add_tracks(username, playlist['id'], trackIDs)
+
+
+# test purposes only
+if __name__ == '__main__':
+    from pullNews import get_headlines
+    from keywordExtractor import ExtractKeywords
+
+    urlList = get_headlines('gb')
+    keywordList = ExtractKeywords(urlList)
+    createPlaylist(keywordList) # TODO: what if the keyword list is empty?
