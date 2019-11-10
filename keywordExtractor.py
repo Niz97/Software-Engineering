@@ -1,10 +1,10 @@
 '''
 @Description: keyword extractor that can extract keywords from the news content downloaded from each URL
-@Version: 3.0.0.20191110
+@Version: 3.1.0.20191110
 @Author: Jichen Zhao (driver) and Connor Worthington (observer)
 @Date: 2019-10-29 14:22:59
 @Last Editors: Jichen Zhao
-@LastEditTime: 2019-11-10 02:55:01
+@LastEditTime: 2019-11-10 04:55:46
 '''
 
 from newspaper import Config, Article
@@ -37,17 +37,14 @@ def ExtractKeywords(urlList: list) -> list:
             except Exception as e:
                 Log('error', repr(e))
             else:
-                try:
-                    keywords = keywords(
-                        content.text,
-                        words = 5, # no more than 5 words in a list of keywords extracted from a piece of news
-                        lemmatize = True, # lemmatise words (e.g. ['dances'] instead of ['dancing', 'dance', 'dances'])
-                        split = True)
-                except Exception as e:
-                    Log('error', repr(e))
-                else:
-                    if len(keywords) > 0:
-                        keywordList.append(keywords)
+                keywordList_element = keywords(
+                    content.text,
+                    words = 5, # no more than 5 words in a list of keywords extracted from a piece of news
+                    lemmatize = True, # lemmatise words (e.g. ['dances'] instead of ['dancing', 'dance', 'dances'])
+                    split = True)
+
+                if len(keywordList_element) > 0:
+                    keywordList.append(keywordList_element)
 
         if len(keywordList) == 0:
             Log('warning', 'The keyword list is empty.')
@@ -66,4 +63,4 @@ if __name__ == '__main__':
     print(len(urlList), 'URL(s):\n', urlList)
 
     keywordList = ExtractKeywords(urlList)
-    print(len(keywordList), 'group(s) of keywords:\n', keywordList)
+    print(len(keywordList), 'list(s) of keywords:\n', keywordList)
