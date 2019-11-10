@@ -1,10 +1,10 @@
 '''
 @Description: keyword extractor that can extract keywords from the news content downloaded from each URL
-@Version: 3.1.0.20191110
+@Version: 3.3.0.20191110
 @Author: Jichen Zhao (driver) and Connor Worthington (observer)
 @Date: 2019-10-29 14:22:59
 @Last Editors: Jichen Zhao
-@LastEditTime: 2019-11-10 04:55:46
+@LastEditTime: 2019-11-10 21:12:41
 '''
 
 from newspaper import Config, Article
@@ -18,7 +18,7 @@ def ExtractKeywords(urlList: list) -> list:
     This function can extract keywords from the news content downloaded from each URL.
 
     :param urlList: a list of URLs from which the news content will be downloaded for keyword extraction
-    :returns: a keyword list whose elements are lists of keywords extracted from each news (no more than 5 words in each list)
+    :returns: a keyword list whose elements are lists of keywords extracted from each news (generally no more than 5 words in each list)
     '''
     
     if len(urlList) > 0:
@@ -29,7 +29,8 @@ def ExtractKeywords(urlList: list) -> list:
         
         # loop to get each URL and to extract keywords from the news content downloaded
         for count in range(len(urlList)):
-            content = Article(urlList[count].strip(), language = 'en', config = articleConfig)
+            url = urlList[count].strip()
+            content = Article(url, language = 'en', config = articleConfig)
             content.download()
 
             try:
@@ -37,14 +38,27 @@ def ExtractKeywords(urlList: list) -> list:
             except Exception as e:
                 Log('error', repr(e))
             else:
-                keywordList_element = keywords(
-                    content.text,
-                    words = 5, # no more than 5 words in a list of keywords extracted from a piece of news
-                    lemmatize = True, # lemmatise words (e.g. ['dances'] instead of ['dancing', 'dance', 'dances'])
-                    split = True)
-
+                try:
+                    keywordList_element = keywords(
+                        content.text,
+                        words = 5, # no more than 5 words in a list of keywords extracted from a piece of news
+                        lemmatize = True, # lemmatise words (e.g. ['dances'] instead of ['dancing', 'dance', 'dances'])
+                        split = True)
+                except IndexError as e:
+                    '''
+                    the exception IndexError is raised due to a bug in the package gensim;
+                    for more info, please refer to: https://github.com/RaRe-Technologies/gensim/issues/2598
+                    '''
+                    Log('error', repr(e) + ' (The exception is raised due to a bug in the package gensim. It should be successfully handled by the app.)')
+                    keywordList_element = keywords(
+                        content.text,
+                        lemmatize = True, # lemmatise words (e.g. ['dances'] instead of ['dancing', 'dance', 'dances'])
+                        split = True)
+                
                 if len(keywordList_element) > 0:
                     keywordList.append(keywordList_element)
+                else:
+                    Log('warning', 'The list of keywords extracted from a piece of news is empty. Related URL: ' + url)
 
         if len(keywordList) == 0:
             Log('warning', 'The keyword list is empty.')
