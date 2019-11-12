@@ -12,13 +12,13 @@ from newsapi import NewsApiClient
 from logTool import Log
 
 
-def get_headlines(countryCode):
+def get_headlines(source):
 
   newsApi = NewsApiClient(api_key = '3bd762aea6134796b564d8e18df60cf8') # handle authentication with a News API key (registered using zjcarvin@outlook.com)
 
   try:
   	# get top headlines from "source"
-  	top_headlines = newsApi.get_top_headlines(country = countryCode, language = 'en')
+  	top_headlines = newsApi.get_top_headlines(sources = source, language = 'en')
   except Exception as e:
   	Log('error', repr(e))
   	return []
@@ -40,4 +40,4 @@ def get_headlines(countryCode):
 
 # test purposes only
 if __name__ == '__main__':
-	print(get_headlines('gb'))
+	print(get_headlines('bbc-news'))
