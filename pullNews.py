@@ -13,7 +13,7 @@ from logTool import Log
 
 
 def get_headlines(source):
-
+  
   newsApi = NewsApiClient(api_key = '3bd762aea6134796b564d8e18df60cf8') # handle authentication with a News API key (registered using zjcarvin@outlook.com)
 
   try:

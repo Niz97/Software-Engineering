@@ -14,9 +14,9 @@ def createPlaylist(keywords):
 	newsDate = today.strftime("%d/%m/%Y")
 	trackIDs = []
 
-	cid ="1d2c347f4e3d4b1e916066709832a6fa" 
-	secret = "c8a5fa505def47f984bf78021d91b5f5"
-	username = "x0pp22txvfpmd630upcjc573a"
+	cid ="b80c9d43d197499f8df5e1e438331a3a" 
+	secret = "82ed92de9f1a450a85115d342ca696e2"
+	username = "uu8bhrprx5sfo9oasyf36hbxz"
 	SPOTIPY_REDIRECT_URL = 'http://localhost/'
 
 	client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret) 
@@ -34,6 +34,7 @@ def createPlaylist(keywords):
 	playlist_name = newsDate+"-"+str(unqiueID)
 	playlists = sp.user_playlist_create(username, playlist_name)
 
+
 	for termArray in keywords:
 		for term in termArray:
 			try:
@@ -42,6 +43,7 @@ def createPlaylist(keywords):
 				trackIDs.append(item[0]['uri'])
 			except Exception as e:
 				Log('error', repr(e))
+
 
 	playlists = sp.user_playlists(username)
 	for playlist in playlists['items']:
