@@ -1,10 +1,10 @@
 '''
 @Description: log tool that can take a log of messages with the level INFO, WARNING, ERROR, or CRITICAL
-@Version: 1.2.0.20191110
-@Author: Jichen Zhao (driver) and Connor Worthington (observer)
+@Version: 1.2.2.20191118
+@Author: Jichen Zhao (driver) and Niran Prajapati (observer)
 @Date: 2019-11-09 06:00:48
 @Last Editors: Jichen Zhao
-@LastEditTime: 2019-11-10 04:27:04
+@LastEditTime: 2019-11-20 15:40:39
 '''
 
 import inspect
@@ -13,7 +13,7 @@ import logging
 
 def Log(level: 'str', message: 'str') -> None:
     '''
-    This function can add a message with the level INFO, WARNING, or ERROR to the specified running log.
+    Add a message with the level INFO, WARNING, or ERROR to the specified running log.
 
     :param level: the level of a message (accepted values: 'info', 'warning', and 'error')
     :param message: the message decided to show in the related record of the running log
@@ -24,7 +24,7 @@ def Log(level: 'str', message: 'str') -> None:
 
     logging.basicConfig(
         level = logging.INFO,
-        filename = 'appName.log', # TODO: filename
+        filename = 'running.log',
         filemode = 'a',
         datefmt="%Y-%m-%d %H:%M:%S",
         format = '%(asctime)s - %(levelname)s - %(message)s')
