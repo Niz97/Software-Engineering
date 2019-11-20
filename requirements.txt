@@ -1,3 +1,5 @@
+PySide2==5.13.2
+bottle==0.12.17
 newsapi-python==0.2.5
 newspaper3k==0.2.8
 gensim==3.8.1
