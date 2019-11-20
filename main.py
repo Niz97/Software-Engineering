@@ -4,7 +4,7 @@
 @Author: Alexandra Garton, Connor Worthington, Jichen Zhao (driver), Niran Prajapati, and William Staff (observer)
 @Date: 2019-10-22 15:22:59
 @Last Editors: Jichen Zhao
-@LastEditTime: 2019-11-20 15:25:53
+@LastEditTime: 2019-11-20 15:53:14
 '''
 
 import sys
@@ -235,7 +235,7 @@ class MainWindow(QMainWindow, appMainWindow.Ui_MainWindow):
 
 
 appName = 'Spotify News - Group 2'
-version = '3.5.0'
+version = '3.7.0'
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
