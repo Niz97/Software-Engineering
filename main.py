@@ -4,7 +4,7 @@
 @Author: Alexandra Garton, Connor Worthington, Jichen Zhao (driver), Niran Prajapati, and William Staff (observer)
 @Date: 2019-10-22 15:22:59
 @Last Editors: Jichen Zhao
-@LastEditTime: 2019-11-20 15:20:27
+@LastEditTime: 2019-11-20 15:25:53
 '''
 
 import sys
@@ -18,7 +18,7 @@ from PySide2 import QtCore
 
 from UI import appMainWindow
 from logTool import Log
-#from webServer import WebServer
+from webServer import WebServer
 from pullNews import get_headlines
 from keywordExtractor import KeywordExtractor
 from playlistCreator import createPlaylist
@@ -26,7 +26,33 @@ from playlistCreator import createPlaylist
 
 class MainWindow(QMainWindow, appMainWindow.Ui_MainWindow):
     def __init__(self):
-        
+        @route('/')
+        def index():
+            sp_oauth = oauth2.SpotifyOAuth(
+                '752b90b62e53446da154d6ed293cc305', # Spotify client ID
+                '4317f7ef57154ebaaf89440ab315dde4', # Spotify client secret
+                'http://localhost:' + str(self.port), # redirect URL
+                scope = 'playlist-modify-public',
+                cache_path = '.cache-spotify')
+            token_info = sp_oauth.get_cached_token()
+
+            if token_info:
+                self.access_token = token_info['access_token']
+            else:
+                url = request.url
+                code = sp_oauth.parse_response_code(url)
+                if code:
+                    token_info = sp_oauth.get_access_token(code)
+                    self.access_token = token_info['access_token']
+
+            if self.access_token:
+                redirect('https://www.spotify.com/')
+            else:
+                redirect(sp_oauth.get_authorize_url())
+            
+
+        def ThreadTask(self):
+            run(server = self.webServer)
         
         super(MainWindow, self).__init__()
         self.setupUi(self)
