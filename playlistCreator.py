@@ -4,7 +4,7 @@
 @Author: William Staff (driver) and Jichen Zhao(observer)
 @Date: 2019-11-06 23:55:01
 @Last Editors: Jichen Zhao
-@LastEditTime: 2019-11-20 15:30:02
+@LastEditTime: 2019-11-23 21:30:34
 '''
 
 import os
@@ -34,8 +34,7 @@ def createPlaylist(token, newsSource, keywords):
 				
 				if len(item) > 0:
 					trackIDs.append(item[0]['uri'])
-		for i in range(0,70):
-			trackIDs.append(trackIDs[0])
+
 		if len(trackIDs) == 0:
 			Log('warning', 'The playlist is empty.')
 		else:
