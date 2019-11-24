@@ -1,13 +1,14 @@
 '''
 @Description: main program
-@Version: 3.7.0.20191118
+@Version: 3.9.0.20191124
 @Author: Alexandra Garton, Connor Worthington, Jichen Zhao (driver), Niran Prajapati, and William Staff (observer)
 @Date: 2019-10-22 15:22:59
 @Last Editors: Jichen Zhao
-@LastEditTime: 2019-11-20 15:53:14
+@LastEditTime: 2019-11-24 03:14:58
 '''
 
 import sys
+import time
 import webbrowser
 import threading
 from bottle import route, run, request, redirect
@@ -28,37 +29,38 @@ class MainWindow(QMainWindow, appMainWindow.Ui_MainWindow):
     def __init__(self):
         @route('/')
         def index():
-            sp_oauth = oauth2.SpotifyOAuth(
-                '752b90b62e53446da154d6ed293cc305', # Spotify client ID
-                '4317f7ef57154ebaaf89440ab315dde4', # Spotify client secret
-                'http://localhost:' + str(self.port), # redirect URL
-                scope = 'playlist-modify-public',
-                cache_path = '.cache-spotify')
-            token_info = sp_oauth.get_cached_token()
+            token_info = self.sp_oauth.get_cached_token()
 
             if token_info:
                 self.access_token = token_info['access_token']
             else:
                 url = request.url
-                code = sp_oauth.parse_response_code(url)
+                code = self.sp_oauth.parse_response_code(url)
                 if code:
-                    token_info = sp_oauth.get_access_token(code)
+                    token_info = self.sp_oauth.get_access_token(code)
                     self.access_token = token_info['access_token']
 
             if self.access_token:
                 redirect('https://www.spotify.com/')
             else:
-                redirect(sp_oauth.get_authorize_url())
+                redirect(self.sp_oauth.get_authorize_url())
             
 
         def ThreadTask(self):
             run(server = self.webServer)
         
+        
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
         self.port = 5000
-        self.webServer = WebServer(host="localhost", port=self.port)
+        self.sp_oauth = oauth2.SpotifyOAuth(
+            '752b90b62e53446da154d6ed293cc305', # Spotify client ID
+            '4317f7ef57154ebaaf89440ab315dde4', # Spotify client secret
+            'http://localhost:' + str(self.port), # redirect URL
+            scope = 'playlist-modify-public',
+            cache_path = '.cache-spotify')
+        self.webServer = WebServer(host = "localhost", port = self.port)
         self.access_token = ''
         self.newsSourceList = [
             {'Id': '(blank)', 'Name': '(Select a news source.)'},
@@ -118,6 +120,20 @@ class MainWindow(QMainWindow, appMainWindow.Ui_MainWindow):
 
 
     def CacheList(self, newsSourceIndex: int) -> bool:
+        def is_token_expired(token_info):
+            now = int(time.time())
+
+            return token_info['expires_at'] - now < 60
+
+
+        def RefreshToken(self):
+            token_info = self.sp_oauth.get_cached_token()
+
+            if is_token_expired(token_info):
+                token_info = self.sp_oauth.refresh_access_token(token_info['refresh_token'])
+                self.access_token = token_info['access_token']
+        
+
         def ManagePlaylistBehaviour(self, newsSourceIndex: int):
             self.listCache[newsSourceIndex]['PlaylistURL'] = ''
             self.buttonOpenPlaylist.setEnabled(False)
@@ -139,6 +155,7 @@ class MainWindow(QMainWindow, appMainWindow.Ui_MainWindow):
             self.listCache[newsSourceIndex]['URLs'] = urlList
             
             if self.access_token:
+                RefreshToken(self)
                 extractor = KeywordExtractor()
                 self.listCache[newsSourceIndex]['Keywords'] = extractor.ExtractKeywords(urlList)
                 self.listCache[newsSourceIndex]['PlaylistURL'] = createPlaylist(
@@ -152,6 +169,7 @@ class MainWindow(QMainWindow, appMainWindow.Ui_MainWindow):
         else:
             if self.listCache[newsSourceIndex]['PlaylistURL'] == '':
                 if self.access_token:
+                    RefreshToken(self)
                     if len(self.listCache[newsSourceIndex]['Keywords']) == 0:
                         extractor = KeywordExtractor()
                         self.listCache[newsSourceIndex]['Keywords'] = extractor.ExtractKeywords(urlList)
@@ -235,7 +253,7 @@ class MainWindow(QMainWindow, appMainWindow.Ui_MainWindow):
 
 
 appName = 'Spotify News - Group 2'
-version = '3.7.0'
+version = '3.9.0'
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
