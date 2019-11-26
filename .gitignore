@@ -101,10 +101,22 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Virtualenv
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+
 # Visual Studio Code
 .vscode/*
 *.code-workspace
 
 # Others
 *.log
-.cache-x0pp22txvfpmd630upcjc573a
+.cache-spotify
