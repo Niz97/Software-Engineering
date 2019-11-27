@@ -1,0 +1,2 @@
+1. This is a Windows version.
+2. The app cannot work well without the folder "resources".
